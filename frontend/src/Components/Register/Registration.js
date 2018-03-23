@@ -172,7 +172,7 @@ class Registration extends Component {
     } = this;
 
     if (loggedIN) {
-      return <Redirect to="/user" />;
+      return <Redirect to="/user/dashboard" />;
     }
 
     return (
