@@ -158,43 +158,18 @@ class Overview extends Component {
                     >
                       <img id="add-btn" src="/images/add-btn.png" />
                     </button>
-                    <div style={{ width: "100px" , position:'absolute', margin: '0 0 0 15%'}}>
+                    <div id='circularProgressBar-container' >
+                       <h3>Level 2</h3> 
                         <CircularProgressbar 
-                        percentage={30}
+                        percentage={u.exp_points/100}
                         initialAnimation={'true'}
-                        textForPercentage={() => `Level 3`}
+                        textForPercentage={() => `${u.exp_points}`}
                         />
                       </div>
                     <div />
                   </div>
                 </div>
               </div>
-              {/* 
-                    
-
-                  <div id="Overview_description">
-
-                    <div id="xp_header">
-                      <div style={{ width: "100px" , position:'absolute', margin: '0 0 0 15%'}}>
-                        <CircularProgressbar 
-                        percentage={30}
-                        initialAnimation={'true'}
-                        textForPercentage={() => `Level 3`}
-                        />
-                      </div>
-                    </div>
-                    <CircularProgressbar 
-                        //className='progress_bar'
-                        percentage={30}
-                        initialAnimation={'true'}
-                        textForPercentage={() => `Level 3`}
-                    <button
-                      className="newGame-btn"
-                      onClick={() => this.setState({ addPressed: true })}
-                    >
-                      <img id="add-btn" src="/images/add-btn.png" />
-                    </button>
-                  </div> */}
 
               <div className="right-half">
                 <div className="inner-right">

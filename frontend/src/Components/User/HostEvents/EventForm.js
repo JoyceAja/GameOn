@@ -194,20 +194,21 @@ export default class Event extends React.Component {
         </div>
         <form onSubmit={this.handleSubmit}>
           <div className="form">
-          <div className="row">
-            <div className="col-25">
-              <label for="imgScr">Upload A Photo: </label>
-            </div>
-            <div className="col-75">
-              <input
-                required
-                type="text"
-                name="imgScr"
-                value={imgScr}
-                onChange={this.handleChange}
-                style={{ color: "black" }}
-              />
-            </div>
+            <div className="row">
+              <div className="col-25">
+                <label for="imgScr">Upload A Photo: </label>
+              </div>
+              <div className="col-75">
+                <input
+                  required
+                  className="event-form"
+                  type="text"
+                  name="imgScr"
+                  value={imgScr}
+                  onChange={this.handleChange}
+                  style={{ color: "black" }}
+                />
+              </div>
           </div>
           <div className="row">
             <div className="col-25">
@@ -216,6 +217,7 @@ export default class Event extends React.Component {
             <div className="col-75">
               <input
                 required
+                className="event-form"
                 type="text"
                 name="Name"
                 value={Name}
@@ -233,6 +235,7 @@ export default class Event extends React.Component {
               <div className=" col-75 address">
                 <input
                   required
+                  className="event-form"
                   type="text"
                   id="address"
                   name="Address"
@@ -282,6 +285,7 @@ export default class Event extends React.Component {
             <div className="col-75">
               <input
                 id="startT"
+                className="event-form"
                 type="text"
                 value={this.state.startTime}
                 readOnly
@@ -315,6 +319,7 @@ export default class Event extends React.Component {
             </div>
             <div className="col-75">
               <input
+              className="event-form"
                 id="endT"
                 type="text"
                 style={{ color: "black" }}
@@ -340,18 +345,19 @@ export default class Event extends React.Component {
               <label for="sports"> Select A Sport:</label>
             </div>
             <div className="col-75">
-              <select
-                name="sports"
-               // style={{ backgroundColor: "#41CFFD" }}
-                onChange={this.handleSportSelect}
-              >
-                {["", ...sports].map((sport, idx) => (
-                  <option key={idx} value={sport.id}>
-                    {sport.name}
-                  </option>
+
+                {sports.map((sport, idx) => (
+                  <div style={{ float: "left", marginLeft: '5px'}} id='sport-icon'>
+                    <img
+                      src={`/icons/${sport.name}-icon.png`}
+                      width="40px"
+                      height="40px"
+                      alt={sport.name}
+                      id={sport.id} onClick={this.handleSportSelect}
+                    />
+                  </div>
                 ))}
-              </select>{" "}
-            </div>
+              </div>
           </div>
 
           <div className="row">
@@ -390,14 +396,14 @@ export default class Event extends React.Component {
             </div>
           </div>
           <input
+          id='submit-form-btn'
           className="times"
             type="submit"
             value="Create event"
-           style={{ width: "20%", padding:"11px", marginTop:"5px", marginBottom:"15px" }}
           />
           </div>
         </form>
-      </div>
+        </div>
     );
   };
   render() {
