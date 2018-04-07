@@ -171,6 +171,11 @@ button:focus {
     height: 100%;
   }
 
+  #navbar-div{
+    margin-top: 0;
+    position: relative;
+  }
+
   #Overview_photo {
     margin-top: 1%;
     width: 200px;
