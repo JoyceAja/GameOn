@@ -16,14 +16,16 @@ export default class Event extends React.Component {
     this.state = {
       Name: "Soccer And The City",
       m: moment(),
-      imgScr: "http://worldsoccertalk.com/wp-content/uploads/2013/11/manchester-city-new-york-600x400.png",
+      imgScr:
+        "http://worldsoccertalk.com/wp-content/uploads/2013/11/manchester-city-new-york-600x400.png",
       Address: "James J Walker Park",
       start: false,
       end: false,
       DateInfo: "",
       startTime: "",
       endTime: "",
-      Description: "Hey Footballers all over New York City. Let's get together to play friendly, competitive and fun pickup games. Come and exercise physically and mentally. Grow & develop yourself with others through the sport of soccer.",
+      Description:
+        "Hey Footballers all over New York City. Let's get together to play friendly, competitive and fun pickup games. Come and exercise physically and mentally. Grow & develop yourself with others through the sport of soccer.",
       sport: "",
       lat: "",
       long: "",
@@ -36,8 +38,9 @@ export default class Event extends React.Component {
       sport_id: "",
       event: "",
       searchResponses: [],
-      sportSelected: '',
-      style: { float: "left", marginLeft: '5px'}
+      sportSelected: "",
+      style: { float: "left", marginLeft: "5px" },
+      userCurrentLocation: {}
     };
   }
 
@@ -53,8 +56,8 @@ export default class Event extends React.Component {
 
   handleSportSelect = e => {
     const id = e.target.id;
-    const sport = e.target.name
-    this.setState({sportSelected: sport})
+    const sport = e.target.name;
+    this.setState({ sportSelected: sport });
     axios.get(`/sport/formats/${id}`).then(res => {
       this.setState({
         gameFormat: res.data.formats,
@@ -104,6 +107,22 @@ export default class Event extends React.Component {
     this.setState({ start: false, end: false });
   };
 
+  getUserCurrentLocation = () => {
+    const success = position => {
+      this.setState(
+        {
+          userCurrentLocation: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }
+        },
+        this.getAllHostedEvents
+      );
+    };
+
+    navigator.geolocation.getCurrentPosition(success);
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     const {
@@ -114,8 +133,39 @@ export default class Event extends React.Component {
       endTime,
       Description,
       sport_id,
-      format_id
+      format_id,
+      userCurrentLocation
     } = this.state;
+
+
+    if(Address === 'My Location'){
+      axios
+      .get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userCurrentLocation.latitude},${userCurrentLocation.longitude}&key=AIzaSyAulk5PFU6VTLLaBMnENrJGrKNlGjKnzhE`)
+      .then(res => {
+        axios
+        .post("/event/add", {
+          name: Name,
+          lat: userCurrentLocation.latitude,
+          long: userCurrentLocation.longitude,
+          location: res.data.results[0].address_components[0].long_name + ' ' + res.data.results[0].address_components[1].long_name,
+          start_ts: new Date(startTime).getTime(),
+          end_ts: new Date(endTime).getTime(),
+          description: Description,
+          sport_id: sport_id,
+          sport_format_id: format_id,
+          event_pic: imgScr
+        })
+        .then(res => {
+          console.log("data i am getting after adding an event", res.data);
+          this.setState({
+            event_id: res.data.event.id,
+            submit: true
+          });
+        })
+        .catch(err => console.log("Error Adding Event:", err));
+      })
+      
+    }
 
     axios
       .get(
@@ -154,9 +204,9 @@ export default class Event extends React.Component {
     });
     axios
       .get(
-        ` https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${e
-          .target
-          .value}&location=nyc&radius=10&key=AIzaSyAulk5PFU6VTLLaBMnENrJGrKNlGjKnzhE`
+        ` https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${
+          e.target.value
+        }&location=nyc&radius=10&key=AIzaSyAulk5PFU6VTLLaBMnENrJGrKNlGjKnzhE`
       )
       .then(res => {
         this.setState({
@@ -175,6 +225,8 @@ export default class Event extends React.Component {
         });
       })
       .catch(err => console.log(err));
+
+    this.getUserCurrentLocation();
   }
 
   form = () => {
@@ -196,7 +248,7 @@ export default class Event extends React.Component {
       <div id="event-form">
         <div className="event-background" />
         <div className="title-name">
-        <h1 id="event-title">Create An Event</h1>
+          <h1 id="event-title">Create An Event</h1>
         </div>
         <form onSubmit={this.handleSubmit}>
           <div className="form">
@@ -215,28 +267,30 @@ export default class Event extends React.Component {
                   style={{ color: "black" }}
                 />
               </div>
-          </div>
-          <div className="row">
-            <div className="col-25">
-              <label for="Name">Name Your Event: </label>
             </div>
-            <div className="col-75">
-              <input
-                required
-                className="event-form"
-                type="text"
-                name="Name"
-                value={Name}
-                placeholder="Event name"
-                onInput={this.handleChange}
-                style={{ color: "black" }}
-              />
+            <div className="row">
+              <div className="col-25">
+                <label for="Name">Name Your Event: </label>
+              </div>
+              <div className="col-75">
+                <input
+                  required
+                  className="event-form"
+                  type="text"
+                  name="Name"
+                  value={Name}
+                  placeholder="Event name"
+                  onInput={this.handleChange}
+                  style={{ color: "black" }}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="row add">
+            <div className="row add">
               <div className="col-25 address-label">
-                <label className= "address_lab" for="address">Enter Address: </label>
+                <label className="address_lab" for="address">
+                  Enter Address:{" "}
+                </label>
               </div>
               <div className=" col-75 address">
                 <input
@@ -256,171 +310,172 @@ export default class Event extends React.Component {
 
             {searchResponses.length ? (
               <div id="address-response-container">
-                {searchResponses.map(res => {
-                  return (
-                    <div
-                      id="address-container"
-                      onClick={() =>
-                        this.setState({
-                          Address: res.description,
-                          searchResponses: []
-                        })}
-                    >
-                      {res.description}
-                    </div>
-                  );
-                })}
+                {[{ description: "My Location" }, ...searchResponses].map(
+                  res => {
+                    return (
+                      <div
+                        id="address-container"
+                        onClick={() =>
+                          this.setState({
+                            Address: res.description,
+                            searchResponses: []
+                          })
+                        }
+                      >
+                        {res.description}
+                      </div>
+                    );
+                  }
+                )}
               </div>
             ) : (
               ""
             )}
 
-
-          <div className="row">
-            <div className="col-25">
-              <label className="time-label" for="startT">
-                <button
-                className='times'
-                  name="start"
-                  onClick={this.handleToggle}
-                >
-                  Start Time
-                </button>
-              </label>
+            <div className="row">
+              <div className="col-25">
+                <label className="time-label" for="startT">
+                  <button
+                    className="times"
+                    name="start"
+                    onClick={this.handleToggle}
+                  >
+                    Start Time
+                  </button>
+                </label>
+              </div>
+              <div className="col-75">
+                <input
+                  id="startT"
+                  className="event-form"
+                  type="text"
+                  value={this.state.startTime}
+                  readOnly
+                  style={{ color: "black" }}
+                />
+              </div>
             </div>
-            <div className="col-75">
-              <input
-                id="startT"
-                className="event-form"
-                type="text"
-                value={this.state.startTime}
-                readOnly
-                style={{ color: "black" }}
-              />
+            <Modal show={start} onHide={this.handleClose}>
+              <Modal.Body style={{ height: "450px" }}>
+                <InputMoment
+                  name="startTime"
+                  moment={this.state.m}
+                  onChange={this.handleMoment}
+                  minStep={5}
+                  onSave={this.handleStartTime}
+                  style={{ marginLeft: "5%" }}
+                />
+              </Modal.Body>
+            </Modal>
+            <div className="row">
+              <div className="col-25">
+                <label className="time-label" for="endT">
+                  <button
+                    className="times"
+                    name="end"
+                    onClick={this.handleToggle}
+                  >
+                    End Time
+                  </button>
+                </label>
+              </div>
+              <div className="col-75">
+                <input
+                  className="event-form"
+                  id="endT"
+                  type="text"
+                  style={{ color: "black" }}
+                  value={this.state.endTime}
+                  readOnly
+                />
+              </div>
             </div>
-          </div>
-          <Modal show={start} onHide={this.handleClose}>
-            <Modal.Body style={{ height: "450px" }}>
-              <InputMoment
-                name="startTime"
-                moment={this.state.m}
-                onChange={this.handleMoment}
-                minStep={5}
-                onSave={this.handleStartTime}
-                style={{ marginLeft: "5%" }}
-              />
-            </Modal.Body>
-          </Modal>
-          <div className="row">
-            <div className="col-25">
-              <label className="time-label" for="endT">
-                <button
-                className='times'
-                  name="end"
-                  onClick={this.handleToggle}
-                >
-                  End Time
-                </button>
-              </label>
-            </div>
-            <div className="col-75">
-              <input
-              className="event-form"
-                id="endT"
-                type="text"
-                style={{ color: "black" }}
-                value={this.state.endTime}
-                readOnly
-              />
-            </div>
-          </div>
-          <Modal show={end} onHide={this.handleClose}>
-            <Modal.Body style={{ height: "450px" }}>
-              <InputMoment
-                name="startTime"
-                moment={this.state.m}
-                onChange={this.handleMoment}
-                minStep={5}
-                onSave={this.handleEndTime}
-                style={{ marginLeft: "5%" }}
-              />
-            </Modal.Body>
-          </Modal>
-          <div className="row">
-            <div className="col-25">
-              <label for="sports"> Select A Sport:</label>
-            </div>
-            <div className="col-75">
-
+            <Modal show={end} onHide={this.handleClose}>
+              <Modal.Body style={{ height: "450px" }}>
+                <InputMoment
+                  name="startTime"
+                  moment={this.state.m}
+                  onChange={this.handleMoment}
+                  minStep={5}
+                  onSave={this.handleEndTime}
+                  style={{ marginLeft: "5%" }}
+                />
+              </Modal.Body>
+            </Modal>
+            <div className="row">
+              <div className="col-25">
+                <label for="sports"> Select A Sport:</label>
+              </div>
+              <div className="col-75">
                 {sports.map((sport, idx) => (
                   <div style={style} name={sport.name}>
                     <img
-                      src={`/icons/${sportSelected === sport.name?'selected':sport.name}-icon.png`}
+                      src={`/icons/${
+                        sportSelected === sport.name ? "selected" : sport.name
+                      }-icon.png`}
                       width="40px"
                       height="40px"
                       alt={sport.name}
                       title={sport.name}
-                      id={sport.id} 
+                      id={sport.id}
                       name={sport.name}
                       onClick={this.handleSportSelect}
                     />
                   </div>
                 ))}
               </div>
-          </div>
+            </div>
 
-          <div className="row">
-            <div className="col-25">
-              <label for="verses">Choose Team Dynamic:</label>
+            <div className="row">
+              <div className="col-25">
+                <label for="verses">Choose Team Dynamic:</label>
+              </div>
+              <div className="col-75">
+                <select
+                  name="verses"
+                  //style={{ backgroundColor: "#41CFFD" }}
+                  class="team"
+                  onChange={this.handleSportFormat}
+                >
+                  {["", ...gameFormat].map(game => (
+                    <option value={game.id}>{game.description}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <div className="col-75">
-              <select
-                name="verses"
-                //style={{ backgroundColor: "#41CFFD" }}
-                class="team"
-                onChange={this.handleSportFormat}
-              >
-                {["", ...gameFormat].map(game => (
-                  <option value={game.id}>{game.description}</option>
-                ))}
-              </select>
+            <div className="row">
+              <div className="col-25">
+                <label for="Description">Describe You're Game </label>
+              </div>
+              <div className="col-75">
+                <textarea
+                  rows="6"
+                  cols="50"
+                  type="textarea"
+                  name="Description"
+                  id="Description"
+                  value={Description}
+                  placeholder="Description"
+                  onInput={this.handleChange}
+                  style={{ color: "black" }}
+                />
+              </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-25">
-              <label for="Description">Describe You're Game </label>
-            </div>
-            <div className="col-75">
-              <textarea
-                rows="6"
-                cols="50"
-                type="textarea"
-                name="Description"
-                id="Description"
-                value={Description}
-                placeholder="Description"
-                onInput={this.handleChange}
-                style={{ color: "black" }}
-              />
-            </div>
-          </div>
-          <input
-          id='submit-form-btn'
-          className="times"
-            type="submit"
-            value="Create event"
-          />
+            <input
+              id="submit-form-btn"
+              className="times"
+              type="submit"
+              value="Create event"
+            />
           </div>
         </form>
-        </div>
+      </div>
     );
   };
   render() {
     const { submit, event_id } = this.state;
-    console.log('the event id is',event_id)
-    const url = `/user/event/${event_id}`
-    return <div>
-      {submit ? <Redirect to={url} /> : this.form()}
-      </div>;
+    console.log("the event id is", event_id);
+    const url = `/user/event/${event_id}`;
+    return <div>{submit ? <Redirect to={url} /> : this.form()}</div>;
   }
 }

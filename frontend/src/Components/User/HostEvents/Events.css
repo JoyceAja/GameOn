@@ -225,8 +225,8 @@ label {
 
 #address-response-container {
   border: 1px solid #70a9e3;
-  width: 510px;
-  margin-left: 21%;
+  width: 390px;
+  margin-left: 15.5%;
   position: absolute;
   background-color: white;
 }
@@ -276,7 +276,7 @@ label {
   .form,
   .title-name,
   #event-title {
-    width: 62.5vh;;
+    width: 68vh;;
   }
 
   #submit-form-btn {
@@ -302,6 +302,14 @@ label {
 
   input[type="submit"] {
     width: 100px;
+  }
+
+  #address-response-container {
+    border: 1px solid #70a9e3;
+    width: 230px;
+    margin-left: 31.5%;
+    position: absolute;
+    background-color: white;
   }
 
   .m-input-moment {

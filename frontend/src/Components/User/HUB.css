@@ -1,20 +1,20 @@
 .navbar {
-    position: relative;
-    z-index: 1;
-    margin-bottom: 0px;
-    border-radius: 0;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0px;
+  border-radius: 0;
 }
 
 #app-Name {
   margin-top: -13px;
   margin-left: 10px;
   width: 89%;
-}  
+}
 
 @media only screen and (max-width: 480px) {
-#app-Name {
-  margin-top: -13px;
-  margin-left: 10px;
-  width: 59%;
-}
+  #app-Name {
+    margin-top: -13px;
+    margin-left: 10px;
+    width: 59%;
+  }
 }

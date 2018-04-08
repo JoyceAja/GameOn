@@ -30,7 +30,15 @@ class Overview extends Component {
         });
       })
       .catch(err => console.log("Failed To Fetch User:", err));
-  };
+    };
+    
+    compare = (a,b)  => {
+      if (a.id < b.id)
+        return -1;
+      if (a.id > b.id)
+        return 1;
+      return 0;
+    }
 
   getUserHistory = () => {
     axios
@@ -38,7 +46,7 @@ class Overview extends Component {
       .then(res => {
         console.log("History", res.data);
         this.setState({
-          historyEvents: res.data.events.reverse()
+          historyEvents: res.data.events.reverse().sort(this.compare).reverse()
         });
       })
       .catch(err => console.log("Failed To Fetch User:", err));
@@ -49,7 +57,7 @@ class Overview extends Component {
       .get("/user/events")
       .then(res => {
         this.setState({
-          usersEvents: res.data.events.reverse()
+          usersEvents: res.data.events.reverse().sort(this.compare).reverse()
         });
       })
       .catch(err => console.log("Error:", err));
@@ -75,13 +83,17 @@ class Overview extends Component {
     navigator.geolocation.getCurrentPosition(showPosition, error, options);
   };
 
+
+  
+
   getAllHostedEvents = (latitude, longitude) => {
+    
     axios
       .get(`/event/radius?lat=${latitude}&long=${longitude}&radius=${10}`)
       .then(res => {
         console.log("HostData:", res.data);
         this.setState({
-          hostedEvents: res.data.events.reverse()
+          hostedEvents: res.data.events.sort(this.compare).reverse()
         });
       });
   };

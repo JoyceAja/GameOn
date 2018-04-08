@@ -6,10 +6,10 @@ class Notifications extends Component {
 
   render(){
     // eslint-disable-next-line
-    const {send} = this.props
+    const {show} = this.props
     return (
       <div>
-        {true?this.notify():''}
+        {show?this.notify():''}
         <ToastContainer />
       </div>
     );

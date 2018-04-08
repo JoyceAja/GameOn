@@ -52,6 +52,8 @@ export default class Survey extends Component {
     const { winner } = this.state;
     const teamA = event.players.filter(player => player.team === "A");
     const teamB = event.players.filter(player => player.team === "B");
+
+    console.log("TeamA", teamA, "TeamB", teamB)
     if (winner === "teamA") {
       axios
         .patch(`/event/end/${event.id}`, {
