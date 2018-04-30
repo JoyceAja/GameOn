@@ -87,7 +87,7 @@ export default class Login extends Component {
       <div className="login_container">
         <div className="pageHeader" />
         <h1 id="login_title">
-          <strong>Game On!</strong> <br />
+          <strong>Game On!sdfsds</strong> <br />
         </h1>
         <Carousel
           controls={false}
